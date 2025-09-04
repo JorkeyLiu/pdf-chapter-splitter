@@ -11,11 +11,16 @@ def get_pdf_outline_info(outline, reader, parent_title=""):
     outline_info = []
     for item in outline:
         if isinstance(item, PyPDF2.generic.Destination):
-            title = item.title
-            # PyPDF2.generic.Destination.page 是一个 IndirectObject，需要解析
-            # 获取页码索引，然后通过 reader.get_page_number(page_object) 获取实际页码
-            page_index = reader.get_page_number(item.page)
-            outline_info.append({"title": title, "page_index": page_index})
+            try:
+                title = item.title
+                # PyPDF2.generic.Destination.page 是一个 IndirectObject，需要解析
+                # 获取页码索引，然后通过 reader.get_page_number(page_object) 获取实际页码
+                page_index = reader.get_page_number(item.page)
+                outline_info.append({"title": title, "page_index": page_index})
+            except Exception as e:
+                # 某些书签可能已损坏或指向无效目标，跳过它们
+                print(f"警告：跳过一个无效的书签 '{getattr(item, 'title', '未知标题')}'。")
+                continue
         elif isinstance(item, list):
             # 处理嵌套书签
             outline_info.extend(get_pdf_outline_info(item, reader, parent_title))

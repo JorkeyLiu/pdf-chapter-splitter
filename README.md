@@ -30,6 +30,11 @@ python pdf_chapter_splitter.py <input_pdf_path> [-o <output_directory>] [--no-se
     *   If this parameter is **not specified**, the script will create a new subfolder in the same directory as the `input_pdf_path`. This subfolder will be named after the input PDF file (without its extension), and all split chapter PDFs will be saved into this subfolder.
     *   **Example**: If `my_book.pdf` is in `/path/to/documents/`, and `-o` is not specified, the output directory will be `/path/to/documents/my_book/`.
 *   `--no-sequence`: **Optional**. A boolean flag. If this flag is included, the split files will **not** have sequential prefixes. By default, files will be prefixed with sequence numbers.
+*   `--level <depth>`: **Optional**. An integer. Specifies the level of bookmarks to process.
+    *   `1` (default): Only processes top-level bookmarks.
+    *   `2`, `3`, etc.: Processes bookmarks up to the specified level.
+    *   `0`: Processes all levels of bookmarks.
+    *   When the level is set to `0` or greater than `1`, the output filenames will include the full hierarchical path of the bookmark (e.g., `Chapter 1 - Section 1.1.pdf`).
 
 **Usage Examples:**
 
@@ -46,6 +51,16 @@ python pdf_chapter_splitter.py <input_pdf_path> [-o <output_directory>] [--no-se
 3.  **Split `document.pdf` to the default directory, but without sequence numbers:**
     ```bash
     python pdf_chapter_splitter.py document.pdf --no-sequence
+    ```
+
+4.  **Split `document_with_nested_chapters.pdf` processing all bookmark levels, with hierarchical filenames:**
+    ```bash
+    python pdf_chapter_splitter.py document_with_nested_chapters.pdf --level 0
+    ```
+
+5.  **Split `manual.pdf` processing only the first two levels of bookmarks, with hierarchical filenames for the second level:**
+    ```bash
+    python pdf_chapter_splitter.py manual.pdf --level 2
     ```
 
 ### Importing as a Module
